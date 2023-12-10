@@ -1,0 +1,25 @@
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "Eryk Mikolajewicz", email = "eryk.mikolajewicz@gmail.com"},
+]
+dependencies = [
+    "fastapi==0.104.1",
+    "uvicorn[standard]==0.24.0",
+    "asyncpg==0.29.0",
+    "motor>=3.3.1",
+    "python-multipart>=0.0.6",
+    "python-jose>=3.3.0",
+    "pydantic>=2.5.2",
+]
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "MIT"}
+
+[tool.pdm.scripts]
+_.env_file = ".env"
+start = {call = "src.main:main"}
+docker_build = {cmd = "docker image build --tag=patients_api ."}
+pgadmin = {cmd = "pgadmin4"}
