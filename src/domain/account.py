@@ -14,7 +14,7 @@ class AccountData(AccountBase):
     login: str = Field(min_length=2, max_length=155)
     name: str = Field(min_length=2, max_length=155)
     surname: str = Field(min_length=2, max_length=255)
-    sex: int = Field(gt=0)
+    sex: str = Field(max_length=10)
     pesel_or_identifier: str = Field(min_length=3, max_length=36)
     birth_date: datetime.date
 

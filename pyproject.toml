@@ -1,7 +1,7 @@
 [project]
-name = ""
-version = ""
-description = ""
+name = "patients_api"
+version = "0.1"
+description = "Medicinal api public version for patients."
 authors = [
     {name = "Eryk Mikolajewicz", email = "eryk.mikolajewicz@gmail.com"},
 ]

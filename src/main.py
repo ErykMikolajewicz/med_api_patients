@@ -3,18 +3,18 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 import uvicorn
 
-from src.databases.relational import create_connection_pool
+from src.databases.relational import connect_to_db
 import src.routers.appointments
 import src.routers.account
-
-app = FastAPI()
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    pool = await create_connection_pool()
+    connection = await connect_to_db()
     yield
-    await pool.close()
+    await connection.close()
+
+app = FastAPI(lifespan=lifespan)
 
 app.include_router(src.routers.appointments.router)
 app.include_router(src.routers.account.router)

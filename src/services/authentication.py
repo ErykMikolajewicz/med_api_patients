@@ -27,5 +27,8 @@ def validate_token(token) -> UUID | None:
         decoded_token = jwt.decode(token, JWT_KEY, algorithms=[JWT_ALGORITHM])
     except JWTError:
         return None
+    token_expire: datetime = decoded_token.get("expire")
+    if token_expire < datetime.now():
+        raise Exception('TOKEN EXPIRED!!!')
     user_id: UUID = decoded_token.get("subject")
     return user_id

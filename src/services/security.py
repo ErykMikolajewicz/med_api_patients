@@ -28,7 +28,7 @@ def hash_password(password: str) -> bytes:
     return hashed_password
 
 
-def verify_password(password: str, hashed_password: str) -> bool:
+def verify_password(password: str, hashed_password: bytes) -> bool:
     to_check = hash_password(password)
     return secrets.compare_digest(hashed_password, to_check)
 

@@ -8,27 +8,24 @@ with open(POSTGRES_PASSWORD_FILE, 'r') as file:
 
 ENV = os.environ["ENV"]
 if ENV == 'LOCAL':
-    host = 'localhost/postgres'
+    host = 'localhost'
 elif ENV == 'DOCKER':
-    host = 'postgres_database/postgres'
+    host = 'postgres_database'
 else:
     raise Exception('Invalid environment config!')
 
-user = 'patient_user'
-
-DATABASE_URL = f"postgresql://{user}:{postgres_password}@{host}"
-
-pool: asyncpg.pool.Pool | None = None
+pool = None
 
 
-async def create_connection_pool():
+async def connect_to_db():
     global pool
-    pool = await asyncpg.pool.create_pool(DATABASE_URL)
+    pool = await asyncpg.pool.create_pool(host=host,
+                                          port=5432,
+                                          user='patient_user',
+                                          database='postgres',
+                                          password=postgres_password)
     return pool
 
 
-def get_session() -> asyncpg.pool.Pool:
+async def get_session() -> asyncpg.pool.Pool:
     return pool
-
-
-session: asyncpg.pool.Pool = get_session()
