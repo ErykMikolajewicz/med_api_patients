@@ -15,16 +15,19 @@ AsyncSessionDep = Annotated[Pool, Depends(get_session)]
 
 
 @router.post("/login/token")
-async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], session):
+async def log_to_app(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], session):
     username = form_data.username
     password = form_data.password
     async with session.begin():
-        user_id = await authenticate(username, password, session)
-    if user_id is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-    else:
-        access_token = create_jwt_token({"subject": user_id})
-        return {"access_token": access_token, "token_type": "bearer"}
+        authentication_result, patient_id = await authenticate(username, password, session)
+    match authentication_result:
+        case True:
+            access_token = create_jwt_token({"subject": patient_id})
+            return {"access_token": access_token, "token_type": "bearer"}
+        case False:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+        case None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='No user with that login.')
 
 
 @router.post("/create/account")
@@ -34,7 +37,6 @@ async def create_account(patient: AccountCreate, session: AsyncSessionDep, respo
     async with session.acquire():
         data_access = repo_pat.Patients(session)
         new_patient = await data_access.add(patient)
-    print(new_patient)
     patient_id = new_patient['id']
     response.headers["Location"] = f"/patients/{patient_id}"
     return new_patient

@@ -14,14 +14,8 @@ class Patients:
         return new_patient
 
     # Probably unnecessary endpoint
-    async def get_by_login(self, login: str):
-        pass
-
-    async def partial_update(self, id_: int, patient: dict[str, Any]):
-        pass
-    
-    async def delete_account(self, id_: int) -> int:
-        pass
-
-    async def get_by_username(self, username):
-        pass
+    async def get_authentication_data(self, login: str) -> dict[str, Any]:
+        authentication_data = await self.connection_pool.fetchval(
+            "SELECT patients.get_authentication_data($1)", login
+        )
+        return authentication_data

@@ -1,48 +1,62 @@
-CREATE PROCEDURE patients.add_patient(
-    IN p_telephone varchar,
-    IN p_email varchar,
-    IN p_address varchar,
-    IN p_login varchar,
-    IN p_name varchar,
-    IN p_surname varchar,
-    IN p_sex varchar,
-    IN p_pesel_or_identifier varchar,
-    IN p_birth_date date,
-    IN p_hashed_password bytea
-)
-LANGUAGE sql
-AS &BODY&
-BEGIN
+CREATE OR REPLACE FUNCTION patients.add_patient(
+	IN p_telephone character varying,
+	IN p_email character varying,
+	IN p_address character varying,
+	IN p_login character varying,
+	IN p_name character varying,
+	IN p_surname character varying,
+	IN p_sex character varying,
+	IN p_pesel_or_identifier character varying,
+	IN p_birth_date date,
+	IN p_hashed_password bytea,
+	OUT "id" uuid,
+	OUT login varchar,
+	OUT "name" varchar,
+	OUT surname varchar,
+	OUT sex varchar,
+	OUT pesel_or_identifier varchar,
+	OUT birth_date date,
+	OUT telephone varchar,
+	OUT email varchar,
+	OUT address varchar)
+LANGUAGE SQL
+AS $BODY$
 
 INSERT INTO patients.patients
 (
-telephone,
-email,
-address,
-login,
-name,
-surname,
-sex,
-pesel_or_identifier,
-birth_date,
-hashed_password
+	telephone,
+	email,
+	address,
+	login,
+	"name",
+	surname,
+	sex,
+	pesel_or_identifier,
+	birth_date,
+	hashed_password
 )
 VALUES
 (
-p_telephone,
-p_email,
-p_address,
-p_login,
-p_name,
-p_surname,
-p_sex,
-p_pesel_or_identifier,
-p_birth_date,
-p_hashed_password
+	p_telephone,
+	p_email,
+	p_address,
+	p_login,
+	p_name,
+	p_surname,
+	p_sex,
+	p_pesel_or_identifier,
+	p_birth_date,
+	p_hashed_password
 )
-RETURNING * as result;
-
-SELECT result;
-
-END;
-$Body$
+RETURNING
+	"id"
+	,login
+	,"name"
+	,surname
+	,sex
+	,pesel_or_identifier
+	,birth_date
+	,telephone
+	,email
+	,address;
+$BODY$;

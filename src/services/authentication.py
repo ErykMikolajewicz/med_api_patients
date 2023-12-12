@@ -7,11 +7,13 @@ from src.services.security import verify_password, TOKEN_EXPIRE_MINUTES, JWT_KEY
 from src.repositories.patients import Patients
 
 
-async def authenticate(username, password, session) -> UUID:
+async def authenticate(login, password, session) -> tuple[bool | None, UUID | None]:
     patients_repo = Patients(session)
-    patient = await patients_repo.get_by_username(username)
-    if verify_password(password, patient.hashed_password):
-        return patient.id
+    authentication_data = await patients_repo.get_authentication_data(login)
+    patient_id = authentication_data['id']
+    if patient_id:
+        return verify_password(password, authentication_data['hashed_password']), patient_id
+    return None, None
 
 
 def create_jwt_token(token_data: dict) -> str:
