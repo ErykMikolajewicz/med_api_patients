@@ -1,14 +1,17 @@
-import uuid
-import datetime
+from uuid import UUID
+from datetime import datetime
 
 from pydantic import BaseModel, Field
 
 
-class AppointmentBase(BaseModel):
-    doctor_id: int = Field(gt=0)
-    start: datetime.datetime
-    end: datetime.datetime
+class Appointment(BaseModel):
+    doctor_id: UUID
+    start: datetime
+    end: datetime
 
 
-class Appointment(AppointmentBase):
-    id: uuid.uuid4
+class AppointmentCreate(BaseModel):
+    doctor_id: UUID
+    start: datetime
+    end: datetime
+    patient_id: UUID

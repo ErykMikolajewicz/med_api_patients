@@ -20,6 +20,7 @@ license = {text = "MIT"}
 
 [tool.pdm.scripts]
 _.env_file = ".env"
-start = {call = "src.main:main"}
+start = {cmd = "uvicorn src.main:app --host='0.0.0.0' --port=8008 --reload"}
+
 docker_build = {cmd = "docker image build --tag=patients_api ."}
 pgadmin = {cmd = "pgadmin4"}
