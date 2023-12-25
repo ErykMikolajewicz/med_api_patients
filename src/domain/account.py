@@ -1,5 +1,5 @@
-from typing import Optional, Any
-import datetime
+from typing import Optional, Any, Literal
+from datetime import date, timedelta
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -14,9 +14,9 @@ class AccountData(AccountBase):
     login: str = Field(min_length=2, max_length=155)
     name: str = Field(min_length=2, max_length=155)
     surname: str = Field(min_length=2, max_length=255)
-    sex: str = Field(max_length=10)
+    sex: Literal['male', 'female', 'intersex']
     pesel_or_identifier: str = Field(min_length=3, max_length=36)
-    birth_date: datetime.date
+    birth_date: date
 
 
 class AccountCreate(AccountData):
@@ -25,9 +25,9 @@ class AccountCreate(AccountData):
 
     @field_validator('birth_date')  # PyCharm raise warning, but it's follow Pydantic documentation
     @classmethod
-    def valid_birthdate(cls, birth_date: datetime.date) -> datetime.date:
-        life_span = datetime.timedelta(days=125*365)
-        current_date = datetime.date.today()
+    def valid_birthdate(cls, birth_date: date) -> date:
+        life_span = timedelta(days=125*365)
+        current_date = date.today()
         if birth_date < current_date - life_span:
             raise ValueError('Birth date to low!')
         elif birth_date > current_date:
