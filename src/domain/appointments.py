@@ -1,7 +1,8 @@
+from typing import Any
 from uuid import UUID
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, model_validator
 
 
 class Appointment(BaseModel):
@@ -9,9 +10,17 @@ class Appointment(BaseModel):
     start: datetime
     end: datetime
 
+    @model_validator(mode='after')  # PyCharm raise warning, but it's follow Pydantic documentation
+    @classmethod
+    def check_date_validation(cls, values: Any) -> Any:
+        start = values.start
+        end = values.end
+        if start <= datetime.now():
+            raise ValueError('Invalid start date.')
+        if end <= start:
+            raise ValueError('Invalid end date.')
+        return values
 
-class AppointmentCreate(BaseModel):
-    doctor_id: UUID
-    start: datetime
-    end: datetime
+
+class AppointmentCreate(Appointment):
     patient_id: UUID

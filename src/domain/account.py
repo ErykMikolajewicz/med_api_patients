@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 class AccountBase(BaseModel):
-    telephone: Optional[str] = Field(None, min_length=9, max_length=13, pattern=r'^\+?\d{9,12}$')
+    telephone: Optional[str] = Field(None, min_length=9, max_length=13, pattern=r'^d{9}$|^\+\d{10,12}$')
     email: Optional[str] = Field(None, min_length=5, max_length=255)
     address: Optional[str] = Field(None)
 
