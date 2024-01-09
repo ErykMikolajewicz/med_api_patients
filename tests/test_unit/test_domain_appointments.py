@@ -4,7 +4,7 @@ from uuid import uuid4
 import pytest
 from pydantic import ValidationError
 
-from src.domain.appointments import AppointmentCreate
+from src.domain.models.appointments import AppointmentCreate
 
 
 @pytest.fixture(scope="function")

@@ -7,7 +7,7 @@ from asyncpg import Pool
 from src.services.authentication import authenticate, create_jwt_token, validate_token
 from src.services.data_preparation import prepare_new_user
 import src.repositories.patients as repo_pat
-from src.domain.account import AccountCreate
+from src.domain.models.account import AccountCreate
 from src.databases.relational import get_session
 
 router = APIRouter(tags=['accounts'])

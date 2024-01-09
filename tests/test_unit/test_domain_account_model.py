@@ -3,7 +3,7 @@ from typing import Any
 import pytest
 from pydantic import ValidationError
 
-from src.domain.account import AccountCreate
+from src.domain.models.account import AccountCreate
 from tests.helpers import RandomStringCreator
 
 
