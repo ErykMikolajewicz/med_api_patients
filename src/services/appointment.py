@@ -4,7 +4,7 @@ from fastapi import HTTPException, status
 
 import src.repositories.appointments as repo_appoint
 import src.repositories.doctors_working_time as repo_working_time
-from src.domain.services.appointment_scheduling import validate_doctors_working_hour, validate_visit_accessibility
+from src.domain.services.appointment_scheduling import validate_doctors_working_hour
 
 
 async def add_appointment(session, appointment):
@@ -18,8 +18,6 @@ async def add_appointment(session, appointment):
     is_valid_visit_time = await validate_doctors_working_hour(appointment, doctor_working_time)
     if not is_valid_visit_time:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Chosen visit date is not available')
-
-    #await validate_visit_accessibility()
 
     appointment_data_access = repo_appoint.Appointments(session)
     new_appointment = await appointment_data_access.add(appointment)

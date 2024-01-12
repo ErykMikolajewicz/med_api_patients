@@ -23,7 +23,3 @@ async def validate_doctors_working_hour(appointment, doctor_working_time):
         return False
 
     return True
-
-
-async def validate_visit_accessibility():
-    raise NotImplementedError
