@@ -1,6 +1,6 @@
 from typing import Any, Annotated
 
-from fastapi import APIRouter, Depends, Response, Request
+from fastapi import APIRouter, Depends, Response, Request, status
 from asyncpg import Pool
 
 from src.routers.account import token_authentication
@@ -13,7 +13,7 @@ router = APIRouter(tags=['appointments'], dependencies=[Depends(token_authentica
 AsyncPool = Annotated[Pool, Depends(get_session)]
 
 
-@router.post("/appointments")
+@router.post("/appointments", status_code=status.HTTP_201_CREATED)
 async def schedule_appointment(appointment: Appointment, session: AsyncPool, response: Response, request: Request):
     patient_id = request.state.patient_id
     appointment: dict[str, Any] = appointment.model_dump()
