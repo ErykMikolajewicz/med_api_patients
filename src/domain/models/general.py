@@ -1,9 +1,12 @@
-import typing
+from typing import Dict, Annotated
 
-from fastapi import Query
+from fastapi import Query, Depends
 
 
-async def pagination(skip: int = Query(0, ge=0),
-                     limit: int = Query(10, ge=0)) -> typing.Tuple[int, int]:
-    capped_limit = min(100, limit)
-    return skip, capped_limit
+async def pagination(page_number: int = Query(1, gt=0),
+                     page_size: int = Query(10, gt=0)) -> Dict[str, int]:
+    page_size = min(100, page_size)
+    offset = page_size*(page_number - 1)
+    return {'offset': offset, 'page_size': page_size}
+
+pagination_dependency = Annotated[dict[str, int], Depends(pagination)]
