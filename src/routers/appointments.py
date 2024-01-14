@@ -18,7 +18,7 @@ AsyncPool = Annotated[Pool, Depends(get_session)]
 DatetimeQuery = Annotated[datetime | None, Query()]
 
 
-@router.get("/appointments", status_code=status.HTTP_201_CREATED)
+@router.get("/appointments")
 async def get_appointments(session: AsyncPool, pagination: pagination_dependency, response: Response, request: Request,
                            appointments_from: DatetimeQuery = None, appointments_to: DatetimeQuery = None):
     patient_id = request.state.patient_id
@@ -44,7 +44,7 @@ async def schedule_appointment(appointment: Appointment, session: AsyncPool, res
     async with session.acquire() as session:
         try:
             new_appointment = await add_appointment(session, appointment)
-        except RaiseError('Visit date engaged!'):
+        except RaiseError:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Chosen visit date is engaged.')
     appointment_id = new_appointment['id']
     response.headers["Location"] = f"/appointments/{appointment_id}"

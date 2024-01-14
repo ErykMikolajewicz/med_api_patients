@@ -14,7 +14,7 @@ elif ENV == 'DOCKER':
 else:
     raise Exception('Invalid environment config!')
 
-pool = None
+pool: asyncpg.Pool | None = None
 
 
 async def connect_to_db():

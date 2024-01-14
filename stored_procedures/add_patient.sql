@@ -8,10 +8,21 @@ CREATE OR REPLACE FUNCTION patients.add_patient(
 	p_sex character varying,
 	p_pesel_or_identifier character varying,
 	p_birth_date date,
-	p_hashed_password bytea)
-    RETURNS RECORD
+	p_hashed_password bytea,
+	OUT id uuid,
+	OUT login character varying,
+	OUT name character varying,
+	OUT surname character varying,
+	OUT sex character varying,
+	OUT pesel_or_identifier character varying,
+	OUT birth_date date,
+	OUT telephone character varying,
+	OUT email character varying,
+	OUT address character varying)
+    RETURNS record
     LANGUAGE 'sql'
 AS $BODY$
+
 INSERT INTO patients.patients
 (
 	telephone,
@@ -49,4 +60,5 @@ RETURNING
 	,telephone
 	,email
 	,address;
+
 $BODY$;

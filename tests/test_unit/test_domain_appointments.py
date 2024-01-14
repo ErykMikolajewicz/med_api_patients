@@ -10,7 +10,7 @@ from src.domain.models.appointments import AppointmentCreate
 @pytest.fixture(scope="function")
 def appointment_data(request):
     correct_data = {
-        'doctor_id': uuid4(),
+        'specialist_id': uuid4(),
         'start': '2024-12-12T08:15',
         'end': '2024-12-12T08:30',
         'patient_id': uuid4()

@@ -6,7 +6,7 @@ from pydantic import BaseModel, model_validator
 
 
 class Appointment(BaseModel):
-    doctor_id: UUID
+    specialist_id: UUID
     start: datetime
     end: datetime
 
