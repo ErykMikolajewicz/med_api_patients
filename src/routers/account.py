@@ -9,13 +9,24 @@ from src.services.data_preparation import prepare_new_user
 import src.repositories.patients as repo_pat
 from src.domain.models.account import AccountCreate
 from src.databases.relational import get_session
+from src.services.patients import check_patient_email, verify_patient_email
 
 router = APIRouter(tags=['accounts'])
 AsyncPool = Annotated[Pool, Depends(get_session)]
 AuthDep = Annotated[OAuth2PasswordRequestForm, Depends(OAuth2PasswordRequestForm)]
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login/token")
+Token = Annotated[str, Depends(oauth2_scheme)]
 
-@router.post("/login/token")
+
+def token_authentication(token: Token, request: Request):
+    validation_result = validate_token(token)
+    if validation_result is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    request.state.patient_id = validation_result
+
+
+@router.post("/login/token", status_code=status.HTTP_201_CREATED)
 async def log_to_app(form_data: AuthDep, pool: AsyncPool):
     username = form_data.username
     password = form_data.password
@@ -31,7 +42,7 @@ async def log_to_app(form_data: AuthDep, pool: AsyncPool):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='No user with that login.')
 
 
-@router.post("/create/account")
+@router.post("/create/account", status_code=status.HTTP_201_CREATED)
 async def create_account(patient: AccountCreate, pool: AsyncPool, response: Response):
     patient: dict[str, Any] = patient.model_dump()
     patient = prepare_new_user(patient)
@@ -43,12 +54,14 @@ async def create_account(patient: AccountCreate, pool: AsyncPool, response: Resp
     return new_patient
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login/token")
-Token = Annotated[str, Depends(oauth2_scheme)]
+@router.post("/verify_email/{verification_parameter}", status_code=status.HTTP_201_CREATED)
+async def verify_email(verification_parameter: str, pool: AsyncPool):
+    async with pool.acquire() as session:
+        patient_id = await check_patient_email(session, verification_parameter)
+        if patient_id is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        email = await verify_patient_email(session, patient_id)
+    return email
 
 
-def token_authentication(token: Token, request: Request):
-    validation_result = validate_token(token)
-    if validation_result is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-    request.state.patient_id = validation_result
+

@@ -14,8 +14,8 @@ SpecialistType = Annotated[int | None, Query()]
 
 
 @router.get("/specialists")
-async def get_specialists(session: AsyncPool, specialist_type_id: SpecialistType = None):
-    async with session.acquire() as session:
+async def get_specialists(pool: AsyncPool, specialist_type_id: SpecialistType = None):
+    async with pool.acquire() as session:
         specialists_list = await get_specialists_list(session, specialist_type_id)
     if not specialists_list:
         raise HTTPException(status_code=status.HTTP_204_NO_CONTENT)
