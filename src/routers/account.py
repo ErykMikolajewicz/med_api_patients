@@ -1,7 +1,7 @@
 from typing import Annotated, Any
 
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Response, BackgroundTasks
 from asyncpg import Pool
 
 from src.services.authentication import authenticate, create_jwt_token, validate_token
@@ -9,7 +9,7 @@ from src.services.data_preparation import prepare_new_user
 import src.repositories.patients as repo_pat
 from src.domain.models.account import AccountCreate
 from src.databases.relational import get_session
-from src.services.patients import check_patient_email, verify_patient_email
+from src.services.patients import check_patient_email, verify_patient_email, send_verification_email
 
 router = APIRouter(tags=['accounts'])
 AsyncPool = Annotated[Pool, Depends(get_session)]
@@ -43,7 +43,7 @@ async def log_to_app(form_data: AuthDep, pool: AsyncPool):
 
 
 @router.post("/create/account", status_code=status.HTTP_201_CREATED)
-async def create_account(patient: AccountCreate, pool: AsyncPool, response: Response):
+async def create_account(patient: AccountCreate, pool: AsyncPool, response: Response, background_task: BackgroundTasks):
     patient: dict[str, Any] = patient.model_dump()
     patient = prepare_new_user(patient)
     async with pool.acquire() as session:
@@ -51,6 +51,7 @@ async def create_account(patient: AccountCreate, pool: AsyncPool, response: Resp
         new_patient = await data_access.add(patient)
     patient_id = new_patient['id']
     response.headers["Location"] = f"/patients/{patient_id}"
+    background_task.add_task(send_verification_email, patient_id, new_patient['email'], pool)
     return new_patient
 
 
