@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import ssl
 
 from fastapi import FastAPI
 import uvicorn
@@ -15,6 +16,9 @@ async def lifespan(app: FastAPI):
     await connection.close()
 
 app = FastAPI(lifespan=lifespan)
+
+ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+ssl_context.load_cert_chain('./certificate.pem', keyfile='./privatekey.pem')
 
 app.include_router(src.routers.appointments.router)
 app.include_router(src.routers.account.router)
