@@ -18,12 +18,12 @@ class Patients:
     # Probably unnecessary endpoint
     async def get_authentication_data(self, login: str) -> dict[str, Any]:
         authentication_data = await self.connection_pool.fetchrow(
-            "SELECT * FROM patients.get_authentication_data($1)", login
+            'SELECT * FROM patients.get_authentication_data($1)', login
         )
         return authentication_data
 
     async def verify_email(self, patient_id: UUID) -> str:
-        email = await self.connection_pool.fetchval("SELECT * FROM patients.verify_email($1)", patient_id)
+        email = await self.connection_pool.fetchval('SELECT * FROM patients.verify_email($1)', patient_id)
         return email
 
 

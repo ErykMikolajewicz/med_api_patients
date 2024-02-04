@@ -4,9 +4,10 @@ import ssl
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 
-from src.databases.relational import connect_to_db
 import src.routers.appointments
 import src.routers.account
+import src.routers.specialist
+from src.databases.relational import connect_to_db
 
 
 @asynccontextmanager
@@ -22,6 +23,7 @@ ssl_context.load_cert_chain('./certificate.pem', keyfile='./privatekey.pem')
 
 app.include_router(src.routers.appointments.router)
 app.include_router(src.routers.account.router)
+app.include_router(src.routers.specialist.router)
 
 
 @app.get("/", response_class=RedirectResponse)  # to see docs after click startup link

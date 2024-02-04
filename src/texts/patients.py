@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class EmailVerification:
+class EmailVerificationText:
     email_subject: str = 'Please verify your email'
     email_body: str = """
     Thank you for register in MedApp! To verify your account please click link in the down:

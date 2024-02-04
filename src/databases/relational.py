@@ -2,11 +2,11 @@ import os
 import asyncpg
 
 
-POSTGRES_PASSWORD_FILE = os.environ["POSTGRES_PASSWORD_FILE"]
+POSTGRES_PASSWORD_FILE = os.environ['POSTGRES_PASSWORD_FILE']
 with open(POSTGRES_PASSWORD_FILE, 'r') as file:
     postgres_password = file.read()
 
-ENV = os.environ["ENV"]
+ENV = os.environ['ENV']
 if ENV == 'LOCAL':
     host = 'localhost'
 elif ENV == 'DOCKER':
