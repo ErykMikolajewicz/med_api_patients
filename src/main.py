@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 import ssl
 
 from fastapi import FastAPI
-import uvicorn
+from fastapi.responses import RedirectResponse
 
 from src.databases.relational import connect_to_db
 import src.routers.appointments
@@ -24,9 +24,6 @@ app.include_router(src.routers.appointments.router)
 app.include_router(src.routers.account.router)
 
 
-def main():
-    uvicorn.run(app, host='0.0.0.0', port=8009)
-
-
-if __name__ == '__main__':
-    main()
+@app.get("/", response_class=RedirectResponse)  # to see docs after click startup link
+async def redirect_fastapi():
+    return "https://localhost:8008/docs"

@@ -1,6 +1,7 @@
+from datetime import datetime, timedelta
 
 
-async def validate_specialist_working_time(appointment, specialist_working_time):
+def validate_specialist_working_time(appointment, specialist_working_time) -> bool:
     if specialist_working_time is None or specialist_working_time['is_working_day'] is False:
         return False
 
@@ -23,3 +24,12 @@ async def validate_specialist_working_time(appointment, specialist_working_time)
         return False
 
     return True
+
+
+def check_can_be_canceled(appointment) -> bool:
+    time_to_visit: timedelta = appointment['start'] - datetime.now()
+    hours_to_visit = time_to_visit.total_seconds()/60/60
+    if hours_to_visit > 12:
+        return True
+    else:
+        return False
