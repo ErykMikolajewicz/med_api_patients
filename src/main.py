@@ -7,6 +7,7 @@ from fastapi.responses import RedirectResponse
 import src.routers.appointments
 import src.routers.account
 import src.routers.specialist
+import src.routers.messages
 from src.databases.relational import connect_to_db
 
 
@@ -24,6 +25,7 @@ ssl_context.load_cert_chain('./certificate.pem', keyfile='./privatekey.pem')
 app.include_router(src.routers.appointments.router)
 app.include_router(src.routers.account.router)
 app.include_router(src.routers.specialist.router)
+app.include_router(src.routers.messages.router)
 
 
 @app.get("/", response_class=RedirectResponse)  # to see docs after click startup link
