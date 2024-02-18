@@ -43,8 +43,4 @@ async def send_verification_email(patient_id: UUID, email: str, pool):
     body = EmailVerificationText.email_body
     body = body.format(verification_parameter=verification_parameter)
 
-    send_email_to_patient(email, med_app_email, med_app_password, subject, body)
-
-
-
-
+    await send_email_to_patient(email, med_app_email, med_app_password, subject, body)
